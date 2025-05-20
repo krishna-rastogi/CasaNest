@@ -17,11 +17,16 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 const mongoose = require("mongoose");
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const listingsRouter = require("./routes/listing.js");
+const reviewsRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 const session = require("express-session");
 const flash = require("connect-flash");
+
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 
 async function main(){
     await mongoose.connect("mongodb://127.0.0.1:27017/CasaNest");
@@ -49,14 +54,35 @@ app.get("/", (req, res) => {
 app.use(session(sessionOptions));
 app.use(flash());
 
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    console.log(req.user);
+    res.locals.currUser = req.user;
     next();
 });
 
-app.use("/listings", listings);
-app.use("/listings/:id/review", reviews);
+// app.get("/demouser", async(req, res)=>{
+//     let fakeUser = new User({
+//         email: "student@gmail.com",
+//         username: "iitbhu-student",
+//     });
+
+//     let registeredUser = await User.register(fakeUser, "password");
+//     res.send(registeredUser);
+// });
+
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/review", reviewsRouter);
+app.use("/", userRouter);
 
 // app.all("*",(req, res, next)=>{
 //     next(new ExpressError(404, "Page not found!"));

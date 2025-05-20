@@ -124,3 +124,9 @@ body{
 .post-btn:hover{
     opacity: 0.85;
 }
+
+.logout, .signup, .login{
+    display: flex;
+    align-items: baseline;
+    /* justify-content: center; */
+}

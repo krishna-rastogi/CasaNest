@@ -1,0 +1,25 @@
+<% layout("/layouts/boilerplate.ejs") %>
+<br>
+<div class="row">
+    <div class="col-6 offset-3">
+        <h1>Login on CasaNest</h1>
+        <form method="POST" action="/login" class="needs-validation mt-5" novalidate>
+            <div class="mb-3">
+                <label for="username" class="form-label"><b>Username</b></label>
+                <input name="username" id="username" placeholder="Enter username" type="text" class="form-control" required>
+                <!-- <div class="valid-feedback">
+                    Valid username
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a valid username.
+                </div> -->
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label"><b>Password</b></label>
+                <input name="password" id="password" placeholder="Enter password" type="password" class="form-control" required>
+            </div>
+            <button class="btn btn-success">Login</button>
+        </form>
+    </div>    
+</div>
