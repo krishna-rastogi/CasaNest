@@ -87,9 +87,9 @@ app.use((req, res, next)=>{
     next();
 });
 
-app.get("/", (req, res) => {
-  res.render("home"); // assumes views/home.ejs exists
-});
+// app.get("/", (req, res) => {
+//   res.render("home"); // assumes views/home.ejs exists
+// });
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/review", reviewsRouter);
@@ -105,6 +105,6 @@ app.use((err, req, res, next) => {  //Middleware for error handling
 });
 
 const PORT = process.env.PORT || 8080; 
-app.listen(8080, ()=>{
+app.listen(PORT, ()=>{
     // console.log("Server is running");
 });
