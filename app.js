@@ -87,6 +87,9 @@ app.use((req, res, next)=>{
     next();
 });
 
+app.get("/", (req, res) => {
+  res.render("home"); // assumes views/home.ejs exists
+});
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/review", reviewsRouter);
