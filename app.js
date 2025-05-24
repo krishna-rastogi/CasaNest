@@ -101,6 +101,7 @@ app.use((err, req, res, next) => {  //Middleware for error handling
     res.status(statusCode).render("./listings/error.ejs", {err});
 });
 
+const PORT = process.env.PORT || 8080; 
 app.listen(8080, ()=>{
     // console.log("Server is running");
 });
