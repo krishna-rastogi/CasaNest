@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV != "production"){
+    require("dotenv").config();
+}
+
 const express = require("express");
 const app = express();
 
@@ -16,12 +20,15 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
 const mongoose = require("mongoose");
+// const MONGO_URL = "mongodb://127.0.0.1:27017/CasaNest";
+const dbUrl = process.env.ATLASDB_URL;
 
 const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 
 const passport = require("passport");
@@ -29,16 +36,29 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/CasaNest");
+    await mongoose.connect(dbUrl);
 }
 main().then(()=>{
-    console.log("Connected successfully to DB");
+    // console.log("Connected successfully to DB");
 }).catch((err) =>{
     console.log(err);
 });
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto:{
+        secret: process.env.SECRET,
+    },
+    touchAfter: 24*60*60,
+});
+
+store.on("error", ()=>{
+    console.log("Error in MONGO Session store", err);
+});
+
 const sessionOptions = {
-    secret: "mysupersecretcode",
+    store: store,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { 
@@ -47,9 +67,6 @@ const sessionOptions = {
         httpOnly: true, 
     }
 };
-app.get("/", (req, res) => {
-    res.send("Working fine");
-});
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -65,20 +82,11 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
-    console.log(req.user);
+    // console.log(req.user);
     res.locals.currUser = req.user;
     next();
 });
 
-// app.get("/demouser", async(req, res)=>{
-//     let fakeUser = new User({
-//         email: "student@gmail.com",
-//         username: "iitbhu-student",
-//     });
-
-//     let registeredUser = await User.register(fakeUser, "password");
-//     res.send(registeredUser);
-// });
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/review", reviewsRouter);
@@ -94,5 +102,5 @@ app.use((err, req, res, next) => {  //Middleware for error handling
 });
 
 app.listen(8080, ()=>{
-    console.log("Server is running");
+    // console.log("Server is running");
 });

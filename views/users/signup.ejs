@@ -7,9 +7,6 @@
             <div class="mb-3">
                 <label for="username" class="form-label"><b>Username</b></label>
                 <input name="username" id="username" placeholder="Enter username" type="text" class="form-control" required>
-                <div class="valid-feedback">
-                    Valid username
-                </div>
                 <div class="invalid-feedback">
                     Please enter a valid username.
                 </div>
@@ -18,10 +15,16 @@
             <div class="mb-3">
                 <label for="email" class="form-label"><b>Email</b></label>
                 <input name="email" id="email" placeholder="Enter email" type="email" class="form-control" required>
+                <div class="invalid-feedback">
+                    Please enter a valid email id.
+                </div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label"><b>Password</b></label>
                 <input name="password" id="password" placeholder="Enter password" type="password" class="form-control" required>
+                <div class="invalid-feedback">
+                    Please enter a valid password.
+                </div>
             </div>
             <button class="btn btn-success">Signup</button>
         </form>
